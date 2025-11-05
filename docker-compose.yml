@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  # 1. SERVICIO DE LA APLICACIÓN SPRING BOOT
+  app:
+    build: . # Usa el Dockerfile que acabamos de crear
+    container_name: franquicias-api
+    ports:
+      - "8080:8080"
+    environment:
+      # Inyección de variables de entorno para la configuración de Spring
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/franquiciasdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgresJp2211
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14-alpine
+    container_name: franquicias-db
+    environment:
+      POSTGRES_DB: franquiciasdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgresJp2211
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
