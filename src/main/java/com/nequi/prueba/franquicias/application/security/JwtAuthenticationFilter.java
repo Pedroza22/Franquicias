@@ -16,36 +16,17 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
-/**
- * Filtro para la autenticación de tokens JWT.
- */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider tokenProvider;
     private final UserDetailsService userDetailsService;
 
-    /**
-     * Constructor para inyectar el proveedor de tokens y el servicio de detalles de usuario.
-     *
-     * @param tokenProvider el proveedor de tokens JWT.
-     * @param userDetailsService el servicio de detalles de usuario.
-     */
     public JwtAuthenticationFilter(JwtTokenProvider tokenProvider, @Lazy UserDetailsService userDetailsService) {
         this.tokenProvider = tokenProvider;
         this.userDetailsService = userDetailsService;
     }
 
-    /**
-     * Filtra las solicitudes para procesar el token JWT.
-     *
-     * @param request la solicitud HTTP.
-     * @param response la respuesta HTTP.
-     * @param filterChain la cadena de filtros.
-     * @throws ServletException si ocurre un error en el servlet.
-     * @throws IOException si ocurre un error de E/S.
-     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -67,12 +48,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * Extrae el token JWT de la cabecera de autorización.
-     *
-     * @param request la solicitud HTTP.
-     * @return el token JWT o nulo si no se encuentra.
-     */
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {

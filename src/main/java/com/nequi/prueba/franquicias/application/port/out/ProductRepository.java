@@ -9,57 +9,17 @@ import java.util.Optional;
  * Repositorio para la gestión de productos.
  */
 public interface ProductRepository {
-    /**
-     * Guarda un nuevo producto.
-     *
-     * @param product el producto a guardar.
-     */
-    void save(Product product);
+    Optional<Product> get(String id);
 
-    /**
-     * Obtiene un producto por su ID.
-     *
-     * @param id el ID del producto.
-     * @return un opcional con el producto si se encuentra.
-     */
-    Optional<Product> get(Long id);
+    List<Product> getAllByBranch(String branchId);
 
-    /**
-     * Actualiza un producto existente.
-     *
-     * @param product el producto a actualizar.
-     */
-    void update(Product product);
+    Optional<Product> getMoreStockByBranch(String branchId);
 
-    /**
-     * Elimina un producto por su ID.
-     *
-     * @param id el ID del producto a eliminar.
-     */
-    void delete(Long id);
+    List<Product> getLessStockByBranch(String branchId, int stock);
 
-    /**
-     * Obtiene todos los productos de una sucursal.
-     *
-     * @param branchId el ID de la sucursal.
-     * @return una lista de productos de la sucursal.
-     */
-    List<Product> getAllByBranch(Long branchId);
+    Product createInBranch(String branchId, Product product);
 
-    /**
-     * Obtiene el producto con más stock de una sucursal.
-     *
-     * @param branchId el ID de la sucursal.
-     * @return un opcional con el producto con más stock.
-     */
-    Optional<Product> getMoreStockByBranch(Long branchId);
+    Optional<Product> update(String id, Product product);
 
-    /**
-     * Obtiene los productos con menos stock que un valor dado en una sucursal.
-     *
-     * @param branchId el ID de la sucursal.
-     * @param stock el valor de stock a comparar.
-     * @return una lista de productos con menos stock.
-     */
-    List<Product> getLessStockByBranch(Long branchId, int stock);
+    boolean delete(String id);
 }

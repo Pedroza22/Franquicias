@@ -1,3 +1,5 @@
+package com.nequi.prueba.franquicias.application.security;
+
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

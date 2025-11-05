@@ -11,10 +11,6 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-
-/**
- * Proveedor de tokens JWT para generar, validar y extraer información de los tokens.
- */
 @Component
 public class JwtTokenProvider {
 
@@ -24,21 +20,10 @@ public class JwtTokenProvider {
     @Value("${app.jwt.expiration-in-ms}")
     private long jwtExpirationInMs;
 
-    /**
-     * Obtiene la clave de firma para los tokens JWT.
-     *
-     * @return la clave de firma.
-     */
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
-    /**
-     * Genera un token JWT para un usuario autenticado.
-     *
-     * @param authentication la información de autenticación.
-     * @return el token JWT.
-     */
     public String generateToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Date now = new Date();
@@ -52,12 +37,6 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    /**
-     * Obtiene el nombre de usuario de un token JWT.
-     *
-     * @param token el token JWT.
-     * @return el nombre de usuario.
-     */
     public String getUsernameFromJWT(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -68,12 +47,6 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
-    /**
-     * Valida un token JWT.
-     *
-     * @param authToken el token JWT a validar.
-     * @return verdadero si el token es válido, falso en caso contrario.
-     */
     public boolean validateToken(String authToken) {
         try {
             Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(authToken);

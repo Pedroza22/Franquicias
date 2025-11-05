@@ -1,30 +1,47 @@
-version: '3.8'
 services:
   # 1. SERVICIO DE LA APLICACIÓN SPRING BOOT
   app:
-    build: . # Usa el Dockerfile que acabamos de crear
+    build: .
     container_name: franquicias-api
     ports:
       - "8080:8080"
     environment:
-      # Inyección de variables de entorno para la configuración de Spring
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/franquiciasdb
+      # Activar perfil prod y configurar Postgres por entorno
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/franquicias
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgresJp2211
+      SPRING_DATASOURCE_PASSWORD: postgres
+      # Opcional: inyectar secreto y expiración JWT
+      APP_JWT_SECRET: ClaveSecretaParaJWTsDeNequiFranquiciasQueEsMuyLargaYCompleja
+      APP_JWT_EXPIRATION_MS: "86400000"
     depends_on:
-      - db
+      - postgres
 
-  db:
-    image: postgres:14-alpine
-    container_name: franquicias-db
+  # 2. PostgreSQL
+  postgres:
+    image: postgres:16
+    container_name: franquicias-postgres
     environment:
-      POSTGRES_DB: franquiciasdb
+      POSTGRES_DB: franquicias
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgresJp2211
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+
+  # 3. pgAdmin (opcional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: franquicias-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8083:80"
+    depends_on:
+      - postgres
 
 volumes:
   postgres_data:

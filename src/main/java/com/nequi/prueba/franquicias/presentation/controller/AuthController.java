@@ -13,10 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-/**
- * Controlador para gestionar la autenticación de usuarios.
- */
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -27,12 +23,6 @@ public class AuthController {
     @Autowired
     private JwtTokenProvider tokenProvider;
 
-    /**
-     * Autentica a un usuario y devuelve un token JWT.
-     *
-     * @param authRequest la solicitud de autenticación con el nombre de usuario y la contraseña.
-     * @return una respuesta con el token JWT.
-     */
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody AuthRequest authRequest) {
 

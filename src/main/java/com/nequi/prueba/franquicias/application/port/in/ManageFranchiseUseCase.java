@@ -4,6 +4,7 @@ import com.nequi.prueba.franquicias.domain.model.Franchise;
 import com.nequi.prueba.franquicias.domain.model.Branch;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Caso de uso para la gestión de franquicias.
@@ -24,7 +25,7 @@ public interface ManageFranchiseUseCase {
      * @param branch la sucursal a agregar.
      * @return la sucursal agregada.
      */
-    Branch addBranch(Long franchiseId, Branch branch);
+    Branch addBranch(String franchiseId, Branch branch);
 
     /**
      * Obtiene todas las franquicias.
@@ -34,22 +35,14 @@ public interface ManageFranchiseUseCase {
     List<Franchise> getAllFranchises();
 
     /**
-     * Actualiza el nombre de una franquicia.
-     *
-     * @param id el ID de la franquicia.
-     * @param newName el nuevo nombre.
-     * @return la franquicia actualizada.
+     * Obtiene una franquicia por su ID.
      */
-    Franchise updateName(Long id, String newName);
+    Optional<Franchise> getById(String id);
 
     /**
-     * Actualiza el nombre de una sucursal.
-     *
-     * @param id el ID de la sucursal.
-     * @param newName el nuevo nombre.
-     * @return la sucursal actualizada.
+     * Obtiene una sucursal por su ID.
      */
-    Branch updateBranchName(Long id, String newName);
+    Optional<Branch> getBranchById(String branchId);
 
     /**
      * Actualiza el nombre de una franquicia.
@@ -58,7 +51,7 @@ public interface ManageFranchiseUseCase {
      * @param newName el nuevo nombre.
      * @return la franquicia actualizada.
      */
-    Franchise updateFranchiseName(Long id, String newName);
+    Franchise updateFranchiseName(String id, String newName);
 
     /**
      * Actualiza el nombre de una sucursal.
@@ -68,5 +61,15 @@ public interface ManageFranchiseUseCase {
      * @param newName el nuevo nombre.
      * @return la sucursal actualizada.
      */
-    Branch updateBranchName(Long franchiseId, Long branchId, String newName);
+    Branch updateBranchName(String franchiseId, String branchId, String newName);
+
+    /**
+     * Elimina una franquicia por su ID.
+     */
+    void deleteFranchise(String id);
+
+    /**
+     * Elimina una sucursal de una franquicia.
+     */
+    boolean deleteBranch(String franchiseId, String branchId);
 }

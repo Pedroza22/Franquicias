@@ -16,10 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-/**
- * Controlador para gestionar las franquicias y sus sucursales.
- */
 @RestController
 @RequestMapping("/franchises")
 @RequiredArgsConstructor
@@ -29,12 +25,6 @@ public class FranchiseController {
     private final FranchiseDtoMapper franchiseDtoMapper;
     private final BranchDtoMapper branchDtoMapper;
 
-    /**
-     * Crea una nueva franquicia.
-     *
-     * @param request la solicitud para crear la franquicia.
-     * @return la franquicia creada.
-     */
     @PostMapping
     public ResponseEntity<FranchiseResponse> createFranchise(@RequestBody FranchiseRequest request) {
         Franchise franchise = franchiseDtoMapper.toDomain(request);
@@ -42,25 +32,21 @@ public class FranchiseController {
         return new ResponseEntity<>(franchiseDtoMapper.toResponse(newFranchise), HttpStatus.CREATED);
     }
 
-    /**
-     * Agrega una nueva sucursal a una franquicia.
-     *
-     * @param franchiseId el ID de la franquicia.
-     * @param request la solicitud para crear la sucursal.
-     * @return la sucursal creada.
-     */
+    @GetMapping("/{id}")
+    public ResponseEntity<FranchiseResponse> getFranchise(@PathVariable String id) {
+        return franchiseUseCase.getById(id)
+                .map(franchiseDtoMapper::toResponse)
+                .map(ResponseEntity::ok)
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @PostMapping("/{franchiseId}/branches")
-    public ResponseEntity<BranchResponse> addBranch(@PathVariable Long franchiseId, @RequestBody BranchRequest request) {
+    public ResponseEntity<BranchResponse> addBranch(@PathVariable String franchiseId, @RequestBody BranchRequest request) {
         Branch branch = branchDtoMapper.toDomain(request);
         Branch newBranch = franchiseUseCase.addBranch(franchiseId, branch);
         return new ResponseEntity<>(branchDtoMapper.toResponse(newBranch), HttpStatus.CREATED);
     }
 
-    /**
-     * Obtiene todas las franquicias.
-     *
-     * @return una lista de todas las franquicias.
-     */
     @GetMapping
     public ResponseEntity<List<FranchiseResponse>> getAllFranchises() {
         List<Franchise> franchises = franchiseUseCase.getAllFranchises();
@@ -70,29 +56,35 @@ public class FranchiseController {
         return ResponseEntity.ok(responses);
     }
 
-    /**
-     * Actualiza el nombre de una franquicia.
-     *
-     * @param id el ID de la franquicia.
-     * @param request la solicitud con el nuevo nombre.
-     * @return la franquicia actualizada.
-     */
     @PatchMapping("/{id}")
-    public ResponseEntity<FranchiseResponse> updateFranchiseName(@PathVariable Long id, @RequestBody FranchiseRequest request) {
-        Franchise franchise = franchiseUseCase.updateName(id, request.getName());
+    public ResponseEntity<FranchiseResponse> updateFranchiseName(@PathVariable String id, @RequestBody FranchiseRequest request) {
+        Franchise franchise = franchiseUseCase.updateFranchiseName(id, request.getName());
         return ResponseEntity.ok(franchiseDtoMapper.toResponse(franchise));
     }
 
-    /**
-     * Actualiza el nombre de una sucursal.
-     *
-     * @param id el ID de la sucursal.
-     * @param request la solicitud con el nuevo nombre.
-     * @return la sucursal actualizada.
-     */
-    @PatchMapping("/branches/{id}")
-    public ResponseEntity<BranchResponse> updateBranchName(@PathVariable Long id, @RequestBody BranchRequest request) {
-        Branch branch = franchiseUseCase.updateBranchName(id, request.getName());
+    @PatchMapping("/{franchiseId}/branches/{branchId}")
+    public ResponseEntity<BranchResponse> updateBranchName(@PathVariable String franchiseId, @PathVariable String branchId, @RequestBody BranchRequest request) {
+        Branch branch = franchiseUseCase.updateBranchName(franchiseId, branchId, request.getName());
         return ResponseEntity.ok(branchDtoMapper.toResponse(branch));
+    }
+
+    @GetMapping("/branches/{branchId}")
+    public ResponseEntity<BranchResponse> getBranch(@PathVariable String branchId) {
+        return franchiseUseCase.getBranchById(branchId)
+                .map(branchDtoMapper::toResponse)
+                .map(ResponseEntity::ok)
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFranchise(@PathVariable String id) {
+        franchiseUseCase.deleteFranchise(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/{franchiseId}/branches/{branchId}")
+    public ResponseEntity<Void> deleteBranch(@PathVariable String franchiseId, @PathVariable String branchId) {
+        boolean deleted = franchiseUseCase.deleteBranch(franchiseId, branchId);
+        return deleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

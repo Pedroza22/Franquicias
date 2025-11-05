@@ -10,33 +10,12 @@ import java.util.Optional;
  */
 public interface ManageProductUseCase {
     /**
-     * Guarda un nuevo producto.
-     *
-     * @param product el producto a guardar.
-     */
-    void save(Product product);
-
-    /**
      * Obtiene un producto por su ID.
      *
      * @param id el ID del producto.
      * @return un opcional con el producto si se encuentra.
      */
-    Optional<Product> get(Long id);
-
-    /**
-     * Actualiza un producto existente.
-     *
-     * @param product el producto a actualizar.
-     */
-    void update(Product product);
-
-    /**
-     * Elimina un producto por su ID.
-     *
-     * @param id el ID del producto a eliminar.
-     */
-    void delete(Long id);
+    Optional<Product> get(String id);
 
     /**
      * Obtiene todos los productos de una sucursal.
@@ -44,7 +23,7 @@ public interface ManageProductUseCase {
      * @param branchId el ID de la sucursal.
      * @return una lista de productos de la sucursal.
      */
-    List<Product> getAllByBranch(Long branchId);
+    List<Product> getAllByBranch(String branchId);
 
     /**
      * Obtiene el producto con más stock de una sucursal.
@@ -52,7 +31,7 @@ public interface ManageProductUseCase {
      * @param branchId el ID de la sucursal.
      * @return un opcional con el producto con más stock.
      */
-    Optional<Product> getMoreStockByBranch(Long branchId);
+    Optional<Product> getMoreStockByBranch(String branchId);
 
     /**
      * Obtiene los productos con menos stock que un valor dado en una sucursal.
@@ -61,5 +40,20 @@ public interface ManageProductUseCase {
      * @param stock el valor de stock a comparar.
      * @return una lista de productos con menos stock.
      */
-    List<Product> getLessStockByBranch(Long branchId, int stock);
+    List<Product> getLessStockByBranch(String branchId, int stock);
+
+    /**
+     * Crea un producto dentro de una sucursal.
+     */
+    Product createInBranch(String branchId, Product product);
+
+    /**
+     * Actualiza los campos de un producto por su ID.
+     */
+    Optional<Product> update(String id, Product product);
+
+    /**
+     * Elimina un producto por su ID.
+     */
+    boolean delete(String id);
 }
